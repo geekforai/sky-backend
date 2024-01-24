@@ -3,9 +3,8 @@ from django.db import models
 class Employer(models.Model):
     company_name = models.CharField(max_length=255)
     contact_person = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    username = models.EmailField(unique=True)
     password = models.TextField()
-
     def __str__(self):
         return self.company_name
 

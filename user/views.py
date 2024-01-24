@@ -8,6 +8,9 @@ from user.user_serializer import Userserializer,EducationSerializer,ExperienceSe
 from django.db.utils import IntegrityError
 from rest_framework import status
 from django.core import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class UserManage(APIView):
     def get(self, request, id=None, *args, **kwargs):
@@ -32,12 +35,17 @@ class UserManage(APIView):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        data=User(first_name=first_name,last_name=last_name,email=email,password=password)
+        data=User(first_name=first_name,last_name=last_name,username=email,password=password)
+        
         try:
             data.save()
+            refresh = RefreshToken.for_user(data)
             return Response({
                   'status':403,
-                'message':'Registered Success'
+                'message':'Registered Success',
+                'username':f'{first_name} {last_name}',
+                'access':str(refresh),
+                'token':str(refresh.access_token),
             })
         except IntegrityError as e:
             print(e)
