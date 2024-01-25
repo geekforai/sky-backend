@@ -20,12 +20,26 @@ class ManageEmployer(APIView):
             'data':serializeData.data
         })
     def post(self,request):
+        
         company_name=request.POST.get('company_name')
         contact_person=request.POST.get('contact_person')
         username=request.POST.get('email')
         password=request.POST.get('password')
         data=Employer(company_name=company_name,contact_person=contact_person,
                       username=username,password=password)
+        if company_name==None:
+            try:
+                logindata =Employer.objects.get(username=username,password=password)
+                print(EmployeeSerializer(logindata).data)
+                return Response({
+                    'status':200,
+                    'data':EmployeeSerializer(logindata).data,
+                })
+            except Exception as e:
+                print(e)
+                pass
+        else:
+            print('else')
         try:
             refresh = RefreshToken.for_user(data)
             data.save()

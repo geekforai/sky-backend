@@ -5,8 +5,6 @@ class Employer(models.Model):
     contact_person = models.CharField(max_length=100)
     username = models.EmailField(unique=True)
     password = models.TextField()
-    def __str__(self):
-        return self.company_name
 
 class Job(models.Model):
     employer = models.ForeignKey(Employer, on_delete=models.CASCADE)

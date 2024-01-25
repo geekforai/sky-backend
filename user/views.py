@@ -36,7 +36,19 @@ class UserManage(APIView):
         email = request.POST.get('email')
         password = request.POST.get('password')
         data=User(first_name=first_name,last_name=last_name,username=email,password=password)
-        
+        if first_name==None:
+            try:
+                logindata =User.objects.get(username=email,password=password)
+                print(Userserializer(logindata).data)
+                return Response({
+                    'status':200,
+                    'data':Userserializer(logindata).data,
+                })
+            except Exception as e:
+                print(e)
+                pass
+        else:
+            print('else')
         try:
             data.save()
             refresh = RefreshToken.for_user(data)
