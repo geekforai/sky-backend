@@ -1,5 +1,6 @@
 from typing import Any
 from django.shortcuts import render
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import APIView
 from rest_framework.response import Response
@@ -63,11 +64,11 @@ class UserManage(APIView):
             print(e)
             return Response({
                 'status':403,
-                'message':'dulicate_entry'
+                'message':str(e)
             })
         except:
         # Process the data and perform necessary actions
-            return Response({"message": "This is a POST request"}, status=status.HTTP_201_CREATED)
+            return Response({'message':str(e)}, status=status.HTTP_201_CREATED)
 
     def put(self, request,id, *args, **kwargs):
         print(id)
@@ -103,7 +104,7 @@ class UserManage(APIView):
 class EducationManage(APIView):
     def get(self,request,id=None):
         if(id!=None):
-            data=Education.objects.get(user_id=id)
+            data=Education.objects.filter(user_id=id)
             serialzeData=EducationSerializer(data)
         else:
             data=Education.objects.all()
@@ -133,11 +134,12 @@ class EducationManage(APIView):
             print(e)
             return Response({
                 'status':'403',
-                'message':'duplicate_entry'
+                'message':str(e)
             })
         except Exception as e:
             print(e)
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response({'message':str(e)
+                })
     def put(self,request,id):
         data=get_object_or_404(Education,id=id)
         institution_name=request.POST.get('institution_name')
@@ -168,7 +170,7 @@ class EducationManage(APIView):
 class ManageExperiance(APIView):
     def get(self,request,id=None):
         if(id!=None):
-            data=Experience.objects.get(user_id=id)
+            data=Experience.objects.filter(user_id=id)
             experienceSerializer=ExperienceSerializer(data)
         else:
             data=Experience.objects.all()
@@ -201,11 +203,11 @@ class ManageExperiance(APIView):
             print(e)
             return Response({
                 'status':403,
-                'message':'duplicate_entry'
+                'message':str(e)
             })
         except:
             return Response({
-                'status':'403'
+                'message':str(e)
             },status=status.HTTP_409_CONFLICT)
     def put(self,request,id):
         job_title=request.POST.get('job_title')
@@ -234,11 +236,11 @@ class ManageExperiance(APIView):
         except IntegrityError as e:
             return Response({
                 'status':403,
-                'message':'duplicate_entry'
+                'message':str(e)
             })
         except:
             return Response({
-                'status':'403'
+                'message':str(e)
             },status=status.HTTP_409_CONFLICT)
     def delete(self,request,id):
         data=get_object_or_404(Experience,id=id)
@@ -250,7 +252,7 @@ class ManageExperiance(APIView):
 class ManageSkills(APIView):
     def get(self,request,id=None):
         if(id!=None):
-            data=Skill.objects.get(user_id=id)
+            data=Skill.objects.filter(user_id=id)
             skilserialzer=SkillSerializer(data)
         else:
             data=Skill.objects.all()
@@ -277,11 +279,11 @@ class ManageSkills(APIView):
         except IntegrityError as e:
             return Response({
                 'status':403,
-                'message':'duplicate_entry'
+                'message':str(e)
             })
         except:
             return Response({
-                'status':'403'
+                'message':str(e)
             },status=status.HTTP_409_CONFLICT)
     def put(self,request,id):
         skill_name=request.POST.get('skill_name')
@@ -302,11 +304,11 @@ class ManageSkills(APIView):
         except IntegrityError as e:
             return Response({
                 'status':403,
-                'message':'duplicate_entry'
+                'message':str(e)
             })
         except:
             return Response({
-                'status':'403'
+                'message':str(e)
             },status=status.HTTP_409_CONFLICT)
     def delete(self,request,id):
         data=get_object_or_404(Skill,id=id)
@@ -319,4 +321,4 @@ class ManageSkills(APIView):
 
 
 
-        
+

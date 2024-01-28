@@ -7,7 +7,9 @@ class Employer(models.Model):
     password = models.TextField()
 
 class Job(models.Model):
+
     employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
+    employer_name=models.CharField(max_length=100)
     job_id = models.CharField(max_length=20, unique=True)
     job_role = models.CharField(max_length=100)
     qualification = models.TextField()
@@ -18,6 +20,7 @@ class Job(models.Model):
     location = models.CharField(max_length=100)
     posted_date = models.DateField(auto_now_add=True)
     deadline = models.DateField()
+    link=models.TextField()
+    verified=models.CharField(max_length=10)
 
-    def __str__(self):
-        return self.job_title
+

@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from user.views import UserManage,EducationManage,ManageExperiance,ManageSkills
 from recruiter.views import ManageEmployer,ManageJob
+from backend.views import contact
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -40,4 +41,5 @@ urlpatterns = [
     path('jobs/<int:id>/', ManageJob.as_view()),
     path('skill/', ManageSkills.as_view()),
     path('skill/<int:id>/', ManageSkills.as_view()),
+    path('contact/', contact),
 ]
