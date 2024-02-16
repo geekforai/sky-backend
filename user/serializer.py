@@ -11,7 +11,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={'input_type':'password'},write_only=True)
     class Meta:
         model=User
-        fields=['name','email','password','password2']
+        fields=['name','email','password','password2','usertype',]
         extra_kwargs={
             'password':{'write_only':True}
         }
@@ -28,7 +28,7 @@ class LoginSerilaizer(serializers.ModelSerializer):
     email=serializers.EmailField(max_length=255)
     class Meta:
         model=User
-        fields=['email','password']
+        fields=['email','password','usertype']
 class ChangePasswordSerializer(serializers.Serializer):
     password=serializers.CharField(max_length=255,style={'input_type':'password'},write_only=True)
     password2=serializers.CharField(max_length=255,style={'input_type':'password'},write_only=True)
@@ -41,7 +41,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         if password!=password2:
             raise serializers.ValidationError("Passwords doesn't match")
         else:
-            
+
             user.set_password(password)
             user.save()
             return attrs
@@ -64,7 +64,7 @@ class SendPasswordResetLinkSerializer(serializers.Serializer):
 
             # Create the email body
             body = f'''
-                            
+
                 Dear {name},
 
                 You recently requested to reset your password for your SkyStarter.Life account.
@@ -102,13 +102,13 @@ class SendPasswordResetLinkSerializer(serializers.Serializer):
             uid=urlsafe_base64_encode(force_bytes(user.id))
 
             token=PasswordResetTokenGenerator().make_token(user)
-            link=f'http://127.0.0.1:8000/api/user/reset_password/{uid}/{token}'
+            link=f'https://skystarter.pythonanywhere.com/api/user/reset_password/{uid}/{token}/'
             self.sendOtp(email=email,link=link,name=user.name)
             print(link)
             return attrs
         else:
             raise serializers.ValidationError('You are not a registered user')
-        
+
 class ResestPasswordSerializer(serializers.Serializer):
     password=serializers.CharField(max_length=255)
     password2=serializers.CharField(max_length=255)

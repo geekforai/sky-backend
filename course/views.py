@@ -7,7 +7,6 @@ from course.renderer import CostumRender
 from rest_framework.permissions import IsAuthenticated
 class CourseView(APIView):
     renderer_classes=[CostumRender]
-    permission_classes=[IsAuthenticated]
     def post(self,request):
         serializer=CourseGetSeializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

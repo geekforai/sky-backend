@@ -8,7 +8,6 @@ from rest_framework.permissions import IsAuthenticated
 
 class ManageJob(APIView):
     renderer_classes =[CostumRender]
-    permission_classes=[IsAuthenticated]
     def get(self,request,id=None):
         if id!=None:
             try:
@@ -25,6 +24,7 @@ class ManageJob(APIView):
         return Response({
             'data':serializeData.data
         },status=status.HTTP_200_OK)
+
     def post(self,request):
         serializer=JobSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -32,6 +32,7 @@ class ManageJob(APIView):
             return Response({'msg':'Job added successfully'},status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status=status.HTTP_501_NOT_IMPLEMENTED)
+
     def delete(self,request,id):
         obj=Job.objects.get(id=id)
         obj.delete()

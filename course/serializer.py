@@ -10,9 +10,12 @@ class CourseSeializer(serializers.ModelSerializer):
         course.save()
         return course
 class CourseGetSeializer(serializers.ModelSerializer):
+    course_img_data = serializers.SerializerMethodField()
     class Meta:
         model=Course
         fields='__all__'
-        
-        
-        
+    def get_course_img_data(self, obj):
+        if obj.course_img:
+            return obj.course_img.read()
+        return None
+

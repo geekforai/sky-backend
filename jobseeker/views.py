@@ -7,6 +7,7 @@ from jobseeker.models import Education,Skill,Experience
 from user.renderers import CostumRender
 class EducationView(APIView):
     renderer_classes=[CostumRender]
+    permission_classes=[IsAuthenticated]
     def post(self,request):
         serializer=EducationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -41,6 +42,8 @@ class EducationView(APIView):
             return Response({'errors':'Data not found to be delete'},status=status.HTTP_400_BAD_REQUEST)
 
 class SkillView(APIView):
+    renderer_classes=[CostumRender]
+    permission_classes=[IsAuthenticated]
     def post(self,request):
         serializer=SkillSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -66,7 +69,7 @@ class SkillView(APIView):
             return Response({'msg':'Education updated succesfully'},status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self,request,id):
         if Skill.objects.filter(id=id).exists():
             education_instance=Skill.objects.get(id=id)
@@ -75,6 +78,8 @@ class SkillView(APIView):
         else:
             return Response({'errors':'Data not found to be delete'},status=status.HTTP_400_BAD_REQUEST)
 class ExperienceView(APIView):
+    renderer_classes=[CostumRender]
+    permission_classes=[IsAuthenticated]
     def post(self,request):
         serializer=ExperienceSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -100,7 +105,7 @@ class ExperienceView(APIView):
             return Response({'msg':'Education updated succesfully'},status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self,request,id):
         if Skill.objects.filter(id=id).exists():
             education_instance=Skill.objects.get(id=id)

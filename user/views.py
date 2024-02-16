@@ -20,14 +20,14 @@ def get_tokens_for_user(user):
     }
 
 class UserRegisterView(APIView):
-    
     renderer_classes=[CostumRender]
     def post(self,request):
         serializer=RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user=serializer.save()
-            response =Response({'msg':'Register Success'},status=status.HTTP_201_CREATED)
-            response.set_cookie('jwt', get_tokens_for_user(user=user)['access'], secure=True, httponly=True, samesite='None')  # Ensure 'secure' is True for HTTPS
+            token=get_tokens_for_user(user=user)
+            response =Response({'msg':'Register Success','token':token,'username':user.name,'userEmail':user.email},status=status.HTTP_201_CREATED)
+
             return response
 
         else:
@@ -39,17 +39,21 @@ class UserLoginView(APIView):
         if serialzer.is_valid(raise_exception=True):
             email=serialzer.data.get('email')
             password=serialzer.data.get('password')
-            user=authenticate(email=email,password=password)
+            usertype=serialzer.data.get('usertype')
+            user=authenticate(email=email,password=password,usertype=usertype)
             if user is not None:
+                if user.usertype!=usertype:
+                    return Response({"msg":"Not Autherized"},status=404)
                 user.last_login = timezone.now()
                 user.save()
-                response= Response({'msg':'Login success'},status=status.HTTP_200_OK)
-                response.set_cookie('jwt', get_tokens_for_user(user=user)['access'], secure=True, httponly=True, samesite='None')  # Ensure 'secure' is True for HTTPS
+                token=get_tokens_for_user(user=user)
+                response =Response({'msg':'Register Success','token':token,'username':user.name,'userEmail':user.email},status=status.HTTP_200_OK)
+                # response= Response({'msg':'Login success'},status=status.HTTP_200_OK)
                 return response
             else:
                 return Response({'msg':'You are not autherized user'},status=status.HTTP_404_NOT_FOUND)
         return Response(serialzer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
+
 class LogoutView(APIView):
     renderer_classes=[CostumRender]
     def get(self,request):

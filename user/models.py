@@ -3,7 +3,7 @@ from  django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 from django.utils import timezone
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, name, password=None,password2=None):
+    def create_user(self, email, name,usertype, password=None,password2=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -14,13 +14,14 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             name=name,
+            usertype=usertype,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, name, password=None):
+    def create_superuser(self, email,usertype, name, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -29,6 +30,7 @@ class UserManager(BaseUserManager):
             email,
             password=password,
             name=name,
+            usertype=usertype
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -40,10 +42,7 @@ class UserManager(BaseUserManager):
 # Create your models here.
 
 class User(AbstractBaseUser):
-    class UserType(models.TextChoices):
-        EMPLOYER = 'employer', 'Employer'
-        JOBSEEKER = 'jobseeker', 'Jobseeker'
-        STUDENT = 'student', 'Student'
+
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
@@ -55,17 +54,15 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     bio=models.CharField(max_length=500)
     dp=models.CharField(max_length=255)
-    usertype = models.CharField(
-        max_length=10,
-        choices=UserType.choices,
-        default=UserType.EMPLOYER,)
+    usertype = models.CharField(max_length=10)
+    verified=models.CharField(max_length=5,default='NO')
     createdAt=models.DateField(default=timezone.now)
-    
+
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name"]
+    REQUIRED_FIELDS = ["name","usertype"]
 
     def __str__(self):
         return self.email
